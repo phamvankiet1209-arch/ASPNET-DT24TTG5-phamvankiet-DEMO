@@ -1,0 +1,12 @@
+@model IList<ApplicationUser>
+@{ ViewData["Title"] = "Nhân viên"; var managers = ViewBag.Managers as IList<ApplicationUser>; }
+<h5>Quản lý</h5>
+<ul>@foreach (var m in managers ?? new List<ApplicationUser>()) { <li>@m.FullName - @m.Email</li> }</ul>
+<h5 class="mt-4">Lễ tân</h5>
+<table class="table bg-white"><thead><tr><th>Họ tên</th><th>Email</th><th>SĐT</th><th>KS</th></tr></thead>
+<tbody>
+@foreach (var s in Model) {
+<tr><td>@s.FullName</td><td>@s.Email</td><td>@s.PhoneNumber</td><td>@(s.HotelId)</td></tr>
+}
+</tbody></table>
+<p class="text-muted">Thêm/sửa nhân viên tại mục Người dùng (quyền Admin).</p>

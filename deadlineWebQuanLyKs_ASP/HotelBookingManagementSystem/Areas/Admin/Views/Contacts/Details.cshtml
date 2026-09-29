@@ -1,0 +1,14 @@
+@model Contact
+@{ ViewData["Title"] = "Chi tiết liên hệ"; }
+<div class="card p-4">
+<p><strong>@Model.FullName</strong> · @Model.Email · @Model.Phone</p>
+<p>@Model.Subject</p>
+<p>@Model.Message</p>
+<form asp-action="Update" method="post">
+@Html.AntiForgeryToken()
+<input type="hidden" name="id" value="@Model.ContactId" />
+<select name="status" class="form-select mb-2" asp-items="Html.GetEnumSelectList<ContactStatus>()"></select>
+<textarea name="adminNote" class="form-control mb-2">@Model.AdminNote</textarea>
+<button class="btn btn-primary">Cập nhật</button>
+</form>
+</div>

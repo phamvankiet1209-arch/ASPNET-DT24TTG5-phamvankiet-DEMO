@@ -1,0 +1,11 @@
+@model List<Amenity>
+@{ ViewData["Title"] = "Tiện nghi"; }
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm</a>
+<table class="table bg-white"><thead><tr><th>Tên</th><th>Icon</th><th></th></tr></thead>
+<tbody>
+@foreach (var a in Model) {
+<tr><td>@a.Name</td><td>@a.Icon</td><td>
+<a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@a.AmenityId">Sửa</a>
+<form asp-action="Delete" asp-route-id="@a.AmenityId" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger" data-confirm="Xóa?">Xóa</button></form>
+</td></tr>}
+</tbody></table>

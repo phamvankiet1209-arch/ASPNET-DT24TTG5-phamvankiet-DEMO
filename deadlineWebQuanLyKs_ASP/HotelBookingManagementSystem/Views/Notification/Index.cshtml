@@ -1,0 +1,18 @@
+@model List<Notification>
+@{ ViewData["Title"] = "Thông báo"; }
+<div class="container py-4">
+    <div class="d-flex justify-content-between">
+        <h2>Thông báo</h2>
+        <form asp-action="MarkAllRead" method="post">@Html.AntiForgeryToken()<button class="btn btn-outline-primary">Đánh dấu đã đọc</button></form>
+    </div>
+    <div class="card-lux mt-3">
+        @foreach (var n in Model)
+        {
+            <div class="p-3 border-bottom @(n.IsRead?"":"bg-light")">
+                <div class="fw-semibold">@n.Title</div>
+                <div>@n.Message</div>
+                <div class="small text-muted">@DateHelper.ToVnDateTime(n.CreatedAt)</div>
+            </div>
+        }
+    </div>
+</div>

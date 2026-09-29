@@ -1,0 +1,18 @@
+@model List<RoomType>
+@{ ViewData["Title"] = "Loại phòng"; }
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm loại phòng</a>
+<table class="table bg-white">
+    <thead><tr><th>Tên</th><th>Người lớn</th><th>Trẻ em</th><th>Giá gốc</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var t in Model)
+    {
+        <tr>
+            <td>@t.Name</td><td>@t.MaxAdults</td><td>@t.MaxChildren</td><td>@CurrencyHelper.ToVnd(t.BasePrice)</td>
+            <td>
+                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@t.RoomTypeId">Sửa</a>
+                <form asp-action="Delete" asp-route-id="@t.RoomTypeId" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger" data-confirm="Xóa loại phòng?">Xóa</button></form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

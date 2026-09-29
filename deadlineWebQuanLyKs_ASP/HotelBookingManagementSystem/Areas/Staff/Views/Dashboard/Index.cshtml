@@ -1,0 +1,13 @@
+@{ ViewData["Title"] = "Dashboard lễ tân"; var recent = (List<Booking>)ViewBag.Recent; }
+<div class="row g-3 mb-4">
+<div class="col-md-3"><div class="card p-3">Chờ xác nhận<br /><h3>@ViewBag.Pending</h3></div></div>
+<div class="col-md-3"><div class="card p-3">Đã xác nhận<br /><h3>@ViewBag.Confirmed</h3></div></div>
+<div class="col-md-3"><div class="card p-3">Đang lưu trú<br /><h3>@ViewBag.Staying</h3></div></div>
+<div class="col-md-3"><div class="card p-3">Check-in hôm nay<br /><h3>@ViewBag.TodayCheckIn</h3></div></div>
+</div>
+<table class="table bg-white"><thead><tr><th>Mã</th><th>Khách</th><th>Phòng</th><th>TT</th></tr></thead>
+<tbody>
+@foreach (var b in recent) {
+<tr><td><a href="/Staff/Bookings/Details/@b.BookingId">@b.BookingCode</a></td><td>@b.GuestName</td><td>@b.Room.Name</td><td>@EnumDisplayHelper.BookingStatus(b.BookingStatus)</td></tr>
+}
+</tbody></table>

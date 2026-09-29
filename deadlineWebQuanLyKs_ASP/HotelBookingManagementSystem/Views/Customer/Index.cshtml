@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Tài khoản của tôi";
+    var user = (ApplicationUser)ViewBag.User;
+    var recent = (List<Booking>)ViewBag.Recent;
+    var vouchers = (List<Voucher>)ViewBag.Vouchers;
+    var suggest = (List<Room>)ViewBag.Suggest;
+}
+<div class="container py-4">
+    <h2>Xin chào, @user.FullName</h2>
+    <p class="text-muted">Quản lý kỳ nghỉ và ưu đãi của bạn tại một nơi.</p>
+    <div class="row g-3 my-3">
+        <div class="col-md-3"><div class="stat-card card p-4"><div class="text-muted">Sắp tới</div><h3>@ViewBag.Upcoming</h3></div></div>
+        <div class="col-md-3"><div class="stat-card card p-4"><div class="text-muted">Hoàn thành</div><h3>@ViewBag.Completed</h3></div></div>
+        <div class="col-md-3"><div class="stat-card card p-4"><div class="text-muted">Đã hủy</div><h3>@ViewBag.Cancelled</h3></div></div>
+        <div class="col-md-3"><div class="stat-card card p-4"><div class="text-muted">Yêu thích</div><h3>@ViewBag.Favorites</h3></div></div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-lux p-4">
+                <h4>Booking gần nhất</h4>
+                @foreach (var b in recent)
+                {
+                    <div class="d-flex justify-content-between border-bottom py-2">
+                        <div>
+                            <div class="fw-semibold">@b.BookingCode · @b.Room.Name</div>
+                            <div class="small text-muted">@DateHelper.ToVnDate(b.CheckInDate) - @EnumDisplayHelper.BookingStatus(b.BookingStatus)</div>
+                        </div>
+                        <a asp-controller="Booking" asp-action="Details" asp-route-id="@b.BookingId">Xem</a>
+                    </div>
+                }
+                <a class="btn btn-outline-primary mt-3" asp-controller="Booking" asp-action="MyBookings">Tất cả đặt phòng</a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-lux p-4 mb-3">
+                <h5>Voucher khả dụng</h5>
+                @foreach (var v in vouchers)
+                {
+                    <div class="border rounded-3 p-2 mb-2"><strong>@v.Code</strong><div class="small">@v.Name</div></div>
+                }
+            </div>
+        </div>
+    </div>
+    <h4 class="mt-4">Gợi ý phòng</h4>
+    <div class="row g-3">
+        @foreach (var r in suggest)
+        {
+            <div class="col-md-3">@await Html.PartialAsync("_RoomCard", r)</div>
+        }
+    </div>
+</div>

@@ -1,0 +1,27 @@
+@model List<Room>
+@{ ViewData["Title"] = "Phòng"; var hotels = (List<Hotel>)ViewBag.Hotels; }
+<form method="get" class="d-flex gap-2 mb-3">
+    <select name="hotelId" class="form-select" style="max-width:260px">
+        <option value="">Tất cả khách sạn</option>
+        @foreach (var h in hotels) { <option value="@h.HotelId" selected="@(ViewBag.HotelId as int? == h.HotelId)">@h.Name</option> }
+    </select>
+    <input class="form-control" name="q" value="@ViewBag.Q" placeholder="Tên/số phòng" />
+    <button class="btn btn-outline-primary">Lọc</button>
+    <a class="btn btn-primary" asp-action="Create">Thêm phòng</a>
+</form>
+<table class="table bg-white">
+    <thead><tr><th>Số</th><th>Tên</th><th>KS</th><th>Loại</th><th>Giá</th><th>TT</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.RoomNumber</td><td>@r.Name</td><td>@r.Hotel.Name</td><td>@r.RoomType.Name</td>
+            <td>@CurrencyHelper.ToVnd(r.DisplayPrice)</td><td>@EnumDisplayHelper.RoomStatus(r.Status)</td>
+            <td>
+                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@r.RoomId">Sửa</a>
+                <form asp-action="Delete" asp-route-id="@r.RoomId" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger" data-confirm="Xóa phòng?">Xóa</button></form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

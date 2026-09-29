@@ -1,0 +1,48 @@
+@model RoomFormViewModel
+@{
+    ViewData["Title"] = Model.RoomId==0?"Thêm phòng":"Sửa phòng";
+    var hotels = (List<Hotel>)ViewBag.Hotels;
+    var types = (List<RoomType>)ViewBag.RoomTypes;
+    var amenities = (List<Amenity>)ViewBag.Amenities;
+}
+<form method="post" enctype="multipart/form-data" class="card p-4">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="RoomId" />
+    <div class="row g-3">
+        <div class="col-md-4"><label>Khách sạn</label><select asp-for="HotelId" class="form-select" asp-items="@(new SelectList(hotels,"HotelId","Name"))"></select></div>
+        <div class="col-md-4"><label>Loại phòng</label><select asp-for="RoomTypeId" class="form-select" asp-items="@(new SelectList(types,"RoomTypeId","Name"))"></select></div>
+        <div class="col-md-4"><label>Số phòng</label><input asp-for="RoomNumber" class="form-control" /></div>
+        <div class="col-md-8"><label>Tên</label><input asp-for="Name" class="form-control" /></div>
+        <div class="col-md-4"><label>Tầng</label><input asp-for="Floor" class="form-control" /></div>
+        <div class="col-12"><label>Mô tả</label><textarea asp-for="Description" class="form-control"></textarea></div>
+        <div class="col-md-3"><label>Diện tích</label><input asp-for="Area" class="form-control" /></div>
+        <div class="col-md-3"><label>Giá/đêm</label><input asp-for="PricePerNight" class="form-control" /></div>
+        <div class="col-md-3"><label>Giá KM</label><input asp-for="DiscountPrice" class="form-control" /></div>
+        <div class="col-md-3"><label>Phụ thu</label><input asp-for="ExtraFee" class="form-control" /></div>
+        <div class="col-md-3"><label>Người lớn</label><input asp-for="AdultCapacity" class="form-control" /></div>
+        <div class="col-md-3"><label>Trẻ em</label><input asp-for="ChildCapacity" class="form-control" /></div>
+        <div class="col-md-3"><label>Giường</label><input asp-for="BedType" class="form-control" /></div>
+        <div class="col-md-3"><label>Số giường</label><input asp-for="NumberOfBeds" class="form-control" /></div>
+        <div class="col-md-4"><label>View</label><input asp-for="ViewType" class="form-control" /></div>
+        <div class="col-md-4"><label>Trạng thái</label><select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<RoomStatus>()"></select></div>
+        <div class="col-md-4"><label>Chính sách hủy</label><input asp-for="CancellationPolicy" class="form-control" /></div>
+        <div class="col-md-4"><label>Ảnh đại diện</label><input asp-for="ThumbnailFile" type="file" class="form-control" /></div>
+        <div class="col-md-8"><label>Thư viện ảnh</label><input asp-for="GalleryFiles" type="file" multiple class="form-control" /></div>
+        <div class="col-12">
+            @foreach (var a in amenities)
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="AmenityIds" value="@a.AmenityId" checked="@Model.AmenityIds.Contains(a.AmenityId)" />
+                    <label class="form-check-label">@a.Name</label>
+                </div>
+            }
+        </div>
+        <div class="col-12 d-flex gap-3">
+            <label class="form-check-label"><input asp-for="BreakfastIncluded" class="form-check-input" /> Ăn sáng</label>
+            <label class="form-check-label"><input asp-for="HasBalcony" class="form-check-input" /> Ban công</label>
+            <label class="form-check-label"><input asp-for="HasWifi" class="form-check-input" /> Wi-Fi</label>
+            <label class="form-check-label"><input asp-for="IsFeatured" class="form-check-input" /> Nổi bật</label>
+        </div>
+    </div>
+    <button class="btn btn-primary mt-3">Lưu</button>
+</form>

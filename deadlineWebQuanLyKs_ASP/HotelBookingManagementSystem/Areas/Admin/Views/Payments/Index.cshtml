@@ -1,0 +1,20 @@
+@model List<Payment>
+@{ ViewData["Title"] = "Thanh toán"; }
+<form method="get" class="d-flex gap-2 mb-3">
+<input class="form-control" name="q" value="@ViewBag.Q" placeholder="Mã GD / booking" />
+<button class="btn btn-primary">Tìm</button>
+</form>
+<table class="table bg-white">
+<thead><tr><th>Mã GD</th><th>Booking</th><th>Phương thức</th><th>Số tiền</th><th>TT</th><th></th></tr></thead>
+<tbody>
+@foreach (var p in Model) {
+<tr>
+<td>@p.TransactionCode</td><td>@p.Booking.BookingCode</td><td>@EnumDisplayHelper.PaymentMethod(p.PaymentMethod)</td>
+<td>@CurrencyHelper.ToVnd(p.Amount)</td><td>@EnumDisplayHelper.PaymentStatus(p.PaymentStatus)</td>
+<td>
+@if (p.PaymentStatus==PaymentStatus.Pending) {
+<form asp-action="Confirm" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@p.PaymentId" /><button class="btn btn-sm btn-success">Xác nhận CK</button></form>
+}
+</td>
+</tr>}
+</tbody></table>

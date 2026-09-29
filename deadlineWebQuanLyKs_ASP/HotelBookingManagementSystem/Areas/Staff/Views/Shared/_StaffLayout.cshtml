@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] ?? "Nhân viên") - StayLux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<div class="admin-shell d-lg-flex">
+    <aside class="admin-sidebar p-3">
+        <a class="d-flex align-items-center gap-2 mb-4 text-white" href="/Staff/Dashboard">
+            <span class="brand-mark">S</span><strong>Lễ tân</strong>
+        </a>
+        <div class="d-flex flex-column gap-1">
+            <a href="/Staff/Dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="/Staff/Bookings"><i class="fa-solid fa-calendar-check"></i> Đặt phòng</a>
+            <a href="/Staff/Bookings/CheckIn"><i class="fa-solid fa-door-open"></i> Check-in</a>
+            <a href="/Admin/Payments"><i class="fa-solid fa-credit-card"></i> Thanh toán</a>
+            <a href="/"><i class="fa-solid fa-globe"></i> Về website</a>
+        </div>
+    </aside>
+    <div class="flex-grow-1 p-4">
+        <div class="d-flex justify-content-between mb-4">
+            <h3 class="mb-0">@ViewData["Title"]</h3>
+            <span>@User.Identity?.Name</span>
+        </div>
+        @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+        @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+        @RenderBody()
+    </div>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

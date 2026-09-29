@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] ?? "Admin") - StayLux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+@{
+    var isAdmin = User.IsInRole("Admin");
+}
+<div class="admin-shell d-lg-flex">
+    <aside class="admin-sidebar p-3">
+        <a class="d-flex align-items-center gap-2 mb-4 text-white" href="/">
+            <span class="brand-mark">S</span><strong>StayLux Admin</strong>
+        </a>
+        <div class="d-flex flex-column gap-1">
+            <a href="/Admin/Dashboard" class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Dashboard"?"active":"")"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="/Admin/Hotels"><i class="fa-solid fa-hotel"></i> Khách sạn</a>
+            <a href="/Admin/RoomTypes"><i class="fa-solid fa-layer-group"></i> Loại phòng</a>
+            <a href="/Admin/Rooms"><i class="fa-solid fa-bed"></i> Phòng</a>
+            <a href="/Admin/Amenities"><i class="fa-solid fa-spa"></i> Tiện nghi</a>
+            <a href="/Admin/Services"><i class="fa-solid fa-bell-concierge"></i> Dịch vụ</a>
+            <a href="/Admin/Bookings"><i class="fa-solid fa-calendar-check"></i> Đặt phòng</a>
+            <a href="/Admin/Payments"><i class="fa-solid fa-credit-card"></i> Thanh toán</a>
+            @if (isAdmin)
+            {
+                <a href="/Admin/Users"><i class="fa-solid fa-users"></i> Người dùng</a>
+            }
+            <a href="/Admin/Staffs"><i class="fa-solid fa-user-tie"></i> Nhân viên</a>
+            <a href="/Admin/Reviews"><i class="fa-solid fa-star"></i> Đánh giá</a>
+            <a href="/Admin/Vouchers"><i class="fa-solid fa-ticket"></i> Voucher</a>
+            <a href="/Admin/Contacts"><i class="fa-solid fa-envelope"></i> Liên hệ</a>
+            <a href="/Admin/Reports"><i class="fa-solid fa-chart-column"></i> Báo cáo</a>
+            <a href="/Admin/SystemLogs"><i class="fa-solid fa-clipboard-list"></i> Nhật ký</a>
+            @if (isAdmin)
+            {
+                <a href="/Admin/Settings"><i class="fa-solid fa-gear"></i> Cài đặt</a>
+            }
+            <a href="/"><i class="fa-solid fa-globe"></i> Về website</a>
+        </div>
+    </aside>
+    <div class="flex-grow-1 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item">Admin</li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                    </ol>
+                </nav>
+                <h3 class="mb-0">@ViewData["Title"]</h3>
+            </div>
+            <div class="fw-semibold">@User.Identity?.Name</div>
+        </div>
+        @if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+        @if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+        @RenderBody()
+    </div>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

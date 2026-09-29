@@ -1,0 +1,30 @@
+@model Booking
+@{ ViewData["Title"] = "Thanh toán"; }
+<div class="container py-4">
+    <h2>Thanh toán đặt phòng @Model.BookingCode</h2>
+    <div class="row g-4 mt-1">
+        <div class="col-lg-7">
+            <form asp-action="Process" method="post" class="card-lux p-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                <p>Tổng thanh toán: <strong class="price">@CurrencyHelper.ToVnd(Model.TotalAmount)</strong></p>
+                @foreach (PaymentMethod m in Enum.GetValues(typeof(PaymentMethod)))
+                {
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="PaymentMethod" value="@m" checked="@(m==PaymentMethod.PayAtHotel)" />
+                        <label class="form-check-label">@EnumDisplayHelper.PaymentMethod(m)</label>
+                    </div>
+                }
+                <div class="mb-3"><label class="form-label">Ghi chú</label><textarea name="Note" class="form-control"></textarea></div>
+                <button class="btn btn-primary">Tiếp tục thanh toán</button>
+            </form>
+        </div>
+        <div class="col-lg-5">
+            <div class="card-lux p-4">
+                <h5>@Model.Room.Name</h5>
+                <p>@DateHelper.ToVnDate(Model.CheckInDate) - @DateHelper.ToVnDate(Model.CheckOutDate)</p>
+                <p class="mb-0">Khách: @Model.GuestName</p>
+            </div>
+        </div>
+    </div>
+</div>

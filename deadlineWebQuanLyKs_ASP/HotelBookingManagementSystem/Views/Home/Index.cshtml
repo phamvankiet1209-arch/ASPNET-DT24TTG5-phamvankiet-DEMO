@@ -1,0 +1,206 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+    var hotels = (List<Hotel>)ViewBag.Hotels;
+    var featured = (List<Room>)ViewBag.FeaturedRooms;
+    var promo = (List<Room>)ViewBag.PromoRooms;
+    var reviews = (List<Review>)ViewBag.Reviews;
+    var cities = ViewBag.Cities as IEnumerable<dynamic>;
+    string DestImg(string city) => city switch
+    {
+        string c when c.Contains("Hà Nội") => "/images/destinations/hanoi.jpg",
+        string c when c.Contains("Đà Nẵng") => "/images/destinations/danang.jpg",
+        string c when c.Contains("Đà Lạt") => "/images/destinations/dalat.jpg",
+        _ => "/images/destinations/hcm.jpg"
+    };
+}
+<section class="hero">
+    <div class="hero-media"></div>
+    <div class="container">
+        <div class="col-lg-8">
+            <span class="hero-kicker"><i class="fa-solid fa-umbrella-beach"></i> Coastal collection</span>
+            <h1>Nơi sóng biển chạm vào kỳ nghỉ của bạn</h1>
+            <p class="lead mt-3 mb-0">Resort sát biển, khách sạn trung tâm và phòng view đẹp trên khắp Việt Nam. Đặt nhẹ nhàng, xác nhận nhanh.</p>
+        </div>
+        <form asp-controller="Room" asp-action="Index" method="get" class="search-card mt-5">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Địa điểm</label>
+                    <input class="form-control" name="City" placeholder="Hà Nội, Đà Nẵng, Đà Lạt..." />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Nhận phòng</label>
+                    <input class="form-control" type="date" name="CheckIn" value="@ViewBag.CheckIn" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Trả phòng</label>
+                    <input class="form-control" type="date" name="CheckOut" value="@ViewBag.CheckOut" />
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">Người lớn</label>
+                    <input class="form-control" type="number" min="1" name="Adults" value="2" />
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">Trẻ em</label>
+                    <input class="form-control" type="number" min="0" name="Children" value="0" />
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">Phòng</label>
+                    <input class="form-control" type="number" min="1" name="NumberOfRooms" value="1" />
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100 btn-rounded">Tìm kiếm</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="hero-wave" aria-hidden="true">
+        <svg class="wave-svg wave-svg--drift" viewBox="0 0 2880 140" preserveAspectRatio="none">
+            <path fill="rgba(27,122,122,.22)" d="M0,70 C180,38 300,108 480,86 C660,64 780,32 960,58 C1140,84 1260,104 1440,72 C1620,38 1740,108 1920,86 C2100,64 2220,32 2400,58 C2580,84 2700,104 2880,72 L2880,140 L0,140 Z"></path>
+            <path fill="rgba(234,246,245,.78)" d="M0,92 C220,118 360,62 540,70 C720,78 840,114 1020,104 C1200,94 1320,78 1440,94 C1660,118 1800,62 1980,70 C2160,78 2280,114 2460,104 C2640,94 2760,78 2880,94 L2880,140 L0,140 Z"></path>
+        </svg>
+        <svg class="wave-svg wave-svg--front" viewBox="0 0 1440 140" preserveAspectRatio="none">
+            <path fill="#F4F1EB" d="M0,86 C150,86 200,114 370,114 C540,114 590,78 740,78 C890,78 950,112 1120,112 C1270,112 1330,90 1440,90 L1440,140 L0,140 Z"></path>
+        </svg>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head" data-animate>
+            <div class="eyebrow">StayLux Stay</div>
+            <h2 class="section-title">Khách sạn nổi bật</h2>
+            <p class="muted mb-0">Những nơi lưu trú được yêu thích, từ phố cổ đến bờ biển.</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var h in hotels)
+            {
+                <div class="col-md-6 col-xl-4" data-animate>
+                    <a asp-controller="Hotel" asp-action="Details" asp-route-id="@h.HotelId" class="card-lux hotel-card d-block">
+                        <div class="media">
+                            <img src="@h.Thumbnail" alt="@h.Name" />
+                        </div>
+                        <div class="p-4">
+                            <div class="small stars">@for (var i = 0; i < h.StarRating; i++) { <i class="fa-solid fa-star"></i> }</div>
+                            <h5 class="mt-2 mb-1">@h.Name</h5>
+                            <div class="text-muted"><i class="fa-solid fa-location-dot me-1"></i>@h.District, @h.City</div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="section-head" data-animate>
+            <div class="eyebrow">Lựa chọn của khách</div>
+            <h2>Phòng nổi bật</h2>
+            <p class="muted mb-0">Không gian sáng, giường êm và tầm nhìn dễ chịu.</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var r in featured)
+            {
+                <div class="col-md-6 col-xl-3" data-animate>@await Html.PartialAsync("_RoomCard", r)</div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4" data-animate>
+            <div>
+                <div class="eyebrow">Ưu đãi</div>
+                <h2>Giá tốt hôm nay</h2>
+                <p class="muted mb-0">Ánh nắng, hồ bơi và những đêm nghỉ dịu dàng.</p>
+            </div>
+            <a class="fw-semibold" asp-controller="Room" asp-action="Promotions">Xem tất cả →</a>
+        </div>
+        <div class="row g-4">
+            @foreach (var r in promo)
+            {
+                <div class="col-md-6 col-xl-4" data-animate>@await Html.PartialAsync("_RoomCard", r)</div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="section-head" data-animate>
+            <div class="eyebrow">Hành trình</div>
+            <h2>Điểm đến phổ biến</h2>
+        </div>
+        <div class="row g-3">
+            @if (cities != null)
+            {
+                foreach (var c in cities)
+                {
+                    <div class="col-6 col-md-3" data-animate>
+                        <a class="dest-card" asp-controller="Room" asp-action="Index" asp-route-City="@c.City">
+                            <img src="@DestImg((string)c.City)" alt="@c.City" />
+                            <div class="overlay">
+                                <h4 class="mb-1">@c.City</h4>
+                                <div>@c.Count khách sạn đang mở</div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="section-head" data-animate>
+            <div class="eyebrow">Cam kết</div>
+            <h2>Vì sao chọn StayLux</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3" data-animate><div class="card-lux p-4"><div class="why-icon"><i class="fa-solid fa-shield-halved"></i></div><h5>Giá minh bạch</h5><p class="muted mb-0">Không phụ phí ẩn, thanh toán rõ ràng bằng VNĐ.</p></div></div>
+            <div class="col-md-3" data-animate><div class="card-lux p-4"><div class="why-icon"><i class="fa-solid fa-clock"></i></div><h5>Xác nhận nhanh</h5><p class="muted mb-0">Đặt phòng và nhận mã chỉ sau vài phút.</p></div></div>
+            <div class="col-md-3" data-animate><div class="card-lux p-4"><div class="why-icon"><i class="fa-solid fa-headset"></i></div><h5>Hỗ trợ 24/7</h5><p class="muted mb-0">Lễ tân và chăm sóc khách luôn sẵn sàng.</p></div></div>
+            <div class="col-md-3" data-animate><div class="card-lux p-4"><div class="why-icon"><i class="fa-solid fa-gift"></i></div><h5>Voucher thật</h5><p class="muted mb-0">WELCOME10, SUMMER20 và nhiều mã theo mùa.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="section-head" data-animate>
+            <div class="eyebrow">Cảm nhận</div>
+            <h2>Khách hàng nói gì</h2>
+        </div>
+        <div class="row g-4">
+            @foreach (var rv in reviews)
+            {
+                <div class="col-md-4" data-animate>
+                    <div class="card-lux review-card p-4">
+                        <div class="stars mb-2">@for (var i = 0; i < rv.Rating; i++) { <i class="fa-solid fa-star"></i> }</div>
+                        <h5>@rv.Title</h5>
+                        <p class="muted">@rv.Comment</p>
+                        <div class="small fw-semibold">@rv.User?.FullName</div>
+                        <div class="small text-muted">@rv.Room?.Hotel?.Name</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="newsletter" data-animate>
+            <div class="eyebrow text-white-50">Newsletter</div>
+            <h2 class="text-white">Nhận ưu đãi sớm nhất</h2>
+            <p class="muted">Gửi email để không bỏ lỡ những đêm nghỉ sát biển.</p>
+            <form asp-action="Newsletter" method="post" class="row justify-content-center g-2">
+                @Html.AntiForgeryToken()
+                <div class="col-md-5"><input class="form-control form-control-lg" name="email" type="email" required placeholder="Email của bạn" /></div>
+                <div class="col-md-2"><button class="btn btn-accent btn-lg w-100 btn-rounded">Đăng ký</button></div>
+            </form>
+        </div>
+    </div>
+</section>

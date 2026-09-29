@@ -1,0 +1,21 @@
+@model Booking
+@{ ViewData["Title"] = "Chi tiết booking"; }
+<div class="card p-4 mb-3">
+    <h4>@Model.BookingCode</h4>
+    <p>@Model.GuestName · @Model.GuestEmail · @Model.GuestPhone · CCCD: @Model.GuestIdentityNumber</p>
+    <p>@Model.Room.Name - @Model.Hotel.Name</p>
+    <p>@DateHelper.ToVnDate(Model.CheckInDate) → @DateHelper.ToVnDate(Model.CheckOutDate)</p>
+    <p>Tổng: @CurrencyHelper.ToVnd(Model.TotalAmount) · Còn thiếu: @(Model.PaymentStatus==PaymentStatus.Paid ? CurrencyHelper.ToVnd(0) : CurrencyHelper.ToVnd(Model.TotalAmount))</p>
+    <p>Ghi chú: @Model.Note</p>
+</div>
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <form asp-action="Confirm" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.BookingId" /><button class="btn btn-info">Xác nhận</button></form>
+    <form asp-action="CheckIn" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.BookingId" /><button class="btn btn-primary">Check-in</button></form>
+    <form asp-action="CheckOut" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.BookingId" /><button class="btn btn-success">Check-out</button></form>
+    <form asp-action="Cancel" method="post" class="d-flex gap-2">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.BookingId" /><input name="reason" class="form-control" placeholder="Lý do hủy" /><button class="btn btn-outline-danger" data-confirm="Hủy booking?">Hủy</button></form>
+</div>
+<form asp-action="AddNote" method="post" class="card p-3">
+    @Html.AntiForgeryToken()<input type="hidden" name="id" value="@Model.BookingId" />
+    <textarea name="note" class="form-control mb-2" placeholder="Ghi chú nội bộ"></textarea>
+    <button class="btn btn-outline-primary">Lưu ghi chú</button>
+</form>

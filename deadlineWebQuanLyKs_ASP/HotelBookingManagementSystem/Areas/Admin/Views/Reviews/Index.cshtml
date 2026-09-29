@@ -1,0 +1,13 @@
+@model List<Review>
+@{ ViewData["Title"] = "Đánh giá"; }
+<table class="table bg-white">
+<thead><tr><th>Khách</th><th>Phòng</th><th>Điểm</th><th>Nội dung</th><th>TT</th><th></th></tr></thead>
+<tbody>
+@foreach (var r in Model) {
+<tr>
+<td>@r.User.FullName</td><td>@r.Room.Name</td><td>@r.Rating</td>
+<td>@r.Title<br /><small>@r.Comment</small></td>
+<td>@(r.Status?"Hiện":"Ẩn")</td>
+<td><form asp-action="Toggle" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@r.ReviewId" /><button class="btn btn-sm btn-outline-warning">Ẩn/Hiện</button></form></td>
+</tr>}
+</tbody></table>

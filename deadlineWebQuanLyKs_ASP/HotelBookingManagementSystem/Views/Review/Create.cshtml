@@ -1,0 +1,21 @@
+@model ReviewFormViewModel
+@{ ViewData["Title"] = "Đánh giá"; var booking = (Booking)ViewBag.Booking; }
+<div class="container py-4">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="card-lux p-4 mx-auto" style="max-width:720px">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="BookingId" /><input type="hidden" asp-for="RoomId" />
+        <h3>Đánh giá @booking.Room.Name</h3>
+        <div class="row g-3">
+            <div class="col-md-4"><label>Tổng quan</label><input asp-for="Rating" type="number" min="1" max="5" class="form-control" /></div>
+            <div class="col-md-4"><label>Sạch sẽ</label><input asp-for="CleanlinessRating" type="number" min="1" max="5" class="form-control" /></div>
+            <div class="col-md-4"><label>Vị trí</label><input asp-for="LocationRating" type="number" min="1" max="5" class="form-control" /></div>
+            <div class="col-md-4"><label>Dịch vụ</label><input asp-for="ServiceRating" type="number" min="1" max="5" class="form-control" /></div>
+            <div class="col-md-4"><label>Nhân viên</label><input asp-for="StaffRating" type="number" min="1" max="5" class="form-control" /></div>
+            <div class="col-md-4"><label>Đáng tiền</label><input asp-for="ValueRating" type="number" min="1" max="5" class="form-control" /></div>
+            <div class="col-12"><label>Tiêu đề</label><input asp-for="Title" class="form-control" /></div>
+            <div class="col-12"><label>Nội dung</label><textarea asp-for="Comment" class="form-control" rows="4"></textarea></div>
+            <div class="col-12"><label>Hình ảnh</label><input asp-for="Image" type="file" class="form-control" /></div>
+        </div>
+        <button class="btn btn-primary mt-3">Gửi đánh giá</button>
+    </form>
+</div>

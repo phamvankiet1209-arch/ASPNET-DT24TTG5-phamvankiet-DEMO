@@ -1,0 +1,91 @@
+@model List<Room>
+@{
+    ViewData["Title"] = "Danh sách phòng";
+    var f = (RoomSearchFilter)ViewBag.Filter;
+    var hotels = (List<Hotel>)ViewBag.Hotels;
+    var types = (List<RoomType>)ViewBag.RoomTypes;
+    var amenities = (List<Amenity>)ViewBag.Amenities;
+    var cities = (List<string>)ViewBag.Cities;
+    int pages = (int)ViewBag.TotalPages;
+}
+<div class="page-banner"><div class="container"><h1>Tìm phòng</h1><p class="mb-0">@ViewBag.Total kết quả phù hợp</p></div></div>
+<div class="container pb-5">
+    <div class="row g-4">
+        <aside class="col-lg-3">
+            <form method="get" class="filter-sidebar">
+                <h5 class="mb-3">Bộ lọc</h5>
+                <div class="mb-2"><label class="form-label">Từ khóa</label><input class="form-control" name="Keyword" value="@f.Keyword" /></div>
+                <div class="mb-2">
+                    <label class="form-label">Thành phố</label>
+                    <select class="form-select" name="City">
+                        <option value="">Tất cả</option>
+                        @foreach (var c in cities) { <option value="@c" selected="@(f.City==c)">@c</option> }
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Khách sạn</label>
+                    <select class="form-select" name="HotelId">
+                        <option value="">Tất cả</option>
+                        @foreach (var h in hotels) { <option value="@h.HotelId" selected="@(f.HotelId==h.HotelId)">@h.Name</option> }
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Loại phòng</label>
+                    <select class="form-select" name="RoomTypeId">
+                        <option value="">Tất cả</option>
+                        @foreach (var t in types) { <option value="@t.RoomTypeId" selected="@(f.RoomTypeId==t.RoomTypeId)">@t.Name</option> }
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-2"><label class="form-label">Nhận</label><input class="form-control" type="date" name="CheckIn" value="@(f.CheckIn?.ToString("yyyy-MM-dd"))" /></div>
+                    <div class="col-6 mb-2"><label class="form-label">Trả</label><input class="form-control" type="date" name="CheckOut" value="@(f.CheckOut?.ToString("yyyy-MM-dd"))" /></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-2"><label class="form-label">Người lớn</label><input class="form-control" type="number" name="Adults" value="@f.Adults" /></div>
+                    <div class="col-6 mb-2"><label class="form-label">Trẻ em</label><input class="form-control" type="number" name="Children" value="@f.Children" /></div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-2"><label class="form-label">Giá từ</label><input class="form-control" type="number" name="MinPrice" value="@f.MinPrice" /></div>
+                    <div class="col-6 mb-2"><label class="form-label">Đến</label><input class="form-control" type="number" name="MaxPrice" value="@f.MaxPrice" /></div>
+                </div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="BreakfastIncluded" value="true" checked="@f.BreakfastIncluded" /><label class="form-check-label">Có ăn sáng</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="HasBalcony" value="true" checked="@f.HasBalcony" /><label class="form-check-label">Ban công</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="HasNiceView" value="true" checked="@f.HasNiceView" /><label class="form-check-label">View đẹp</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="HasWifi" value="true" checked="@f.HasWifi" /><label class="form-check-label">Wi-Fi</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="HasAirConditioner" value="true" checked="@f.HasAirConditioner" /><label class="form-check-label">Điều hòa</label></div>
+                <div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="HasBathtub" value="true" checked="@f.HasBathtub" /><label class="form-check-label">Bồn tắm</label></div>
+                <div class="mb-3">
+                    <label class="form-label">Sắp xếp</label>
+                    <select class="form-select" name="Sort">
+                        <option value="popular" selected="@(f.Sort=="popular")">Phổ biến nhất</option>
+                        <option value="price_asc" selected="@(f.Sort=="price_asc")">Giá thấp đến cao</option>
+                        <option value="price_desc" selected="@(f.Sort=="price_desc")">Giá cao đến thấp</option>
+                        <option value="rating" selected="@(f.Sort=="rating")">Đánh giá cao nhất</option>
+                        <option value="newest" selected="@(f.Sort=="newest")">Mới nhất</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary w-100">Áp dụng</button>
+            </form>
+        </aside>
+        <div class="col-lg-9">
+            <div class="row g-4">
+                @foreach (var r in Model)
+                {
+                    <div class="col-md-6 col-xl-4">@await Html.PartialAsync("_RoomCard", r)</div>
+                }
+            </div>
+            @if (!Model.Any()) { <div class="empty-state">Không tìm thấy phòng phù hợp.</div> }
+            @if (pages > 1)
+            {
+                <nav class="mt-4">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= pages; i++)
+                        {
+                            <li class="page-item @(i==f.Page?"active":"")"><a class="page-link" href="?Page=@i&Keyword=@f.Keyword&City=@f.City&Sort=@f.Sort">@i</a></li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>

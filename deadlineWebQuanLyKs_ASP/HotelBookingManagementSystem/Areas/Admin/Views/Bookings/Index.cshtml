@@ -1,0 +1,20 @@
+@model List<Booking>
+@{ ViewData["Title"] = "Đặt phòng"; }
+<form method="get" class="d-flex gap-2 mb-3">
+    <input class="form-control" name="q" value="@ViewBag.Q" placeholder="Mã, email, SĐT, CCCD" />
+    <select name="status" class="form-select" asp-items="Html.GetEnumSelectList<BookingStatus>()"><option value="">Trạng thái</option></select>
+    <button class="btn btn-primary">Lọc</button>
+</form>
+<table class="table bg-white">
+<thead><tr><th>Mã</th><th>Khách</th><th>Phòng</th><th>Ngày</th><th>Tổng</th><th>Booking</th><th>TT</th><th></th></tr></thead>
+<tbody>
+@foreach (var b in Model) {
+<tr>
+<td>@b.BookingCode</td><td>@b.GuestName</td><td>@b.Room.Name</td>
+<td>@DateHelper.ToVnDate(b.CheckInDate) - @DateHelper.ToVnDate(b.CheckOutDate)</td>
+<td>@CurrencyHelper.ToVnd(b.TotalAmount)</td>
+<td>@EnumDisplayHelper.BookingStatus(b.BookingStatus)</td>
+<td>@EnumDisplayHelper.PaymentStatus(b.PaymentStatus)</td>
+<td><a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@b.BookingId">Chi tiết</a></td>
+</tr>}
+</tbody></table>

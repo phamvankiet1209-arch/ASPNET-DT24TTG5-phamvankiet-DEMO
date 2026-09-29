@@ -1,0 +1,18 @@
+@model List<(ApplicationUser User, IList<string> Roles)>
+@{ ViewData["Title"] = "Người dùng"; }
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm user</a>
+<table class="table bg-white">
+<thead><tr><th>Họ tên</th><th>Email</th><th>Role</th><th>TT</th><th></th></tr></thead>
+<tbody>
+@foreach (var x in Model) {
+<tr>
+<td>@x.User.FullName</td><td>@x.User.Email</td><td>@string.Join(", ", x.Roles)</td>
+<td>@(x.User.IsActive?"Hoạt động":"Khóa")</td>
+<td>
+<a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@x.User.Id">Sửa</a>
+<a class="btn btn-sm btn-outline-secondary" asp-action="Bookings" asp-route-id="@x.User.Id">Booking</a>
+<form asp-action="ToggleLock" method="post" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@x.User.Id" /><button class="btn btn-sm btn-outline-warning">Khóa/Mở</button></form>
+<form asp-action="ResetPassword" method="post" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@x.User.Id" /><button class="btn btn-sm btn-outline-dark" data-confirm="Reset mật khẩu User@123?">Reset MK</button></form>
+</td>
+</tr>}
+</tbody></table>

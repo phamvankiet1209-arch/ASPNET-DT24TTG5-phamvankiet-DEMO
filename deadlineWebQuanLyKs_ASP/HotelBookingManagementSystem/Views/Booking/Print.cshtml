@@ -1,0 +1,13 @@
+@model Booking
+@{ ViewData["Title"] = "In đặt phòng"; Layout = "_Layout"; }
+<div class="container py-4">
+    <div class="card-lux p-5" id="printArea">
+        <h2>StayLux - Xác nhận đặt phòng</h2>
+        <h4>@Model.BookingCode</h4>
+        <p>Khách: @Model.GuestName · @Model.GuestEmail · @Model.GuestPhone</p>
+        <p>Phòng: @Model.Room.Name - @Model.Hotel.Name</p>
+        <p>@DateHelper.ToVnDate(Model.CheckInDate) → @DateHelper.ToVnDate(Model.CheckOutDate)</p>
+        <h3>Tổng: @CurrencyHelper.ToVnd(Model.TotalAmount)</h3>
+    </div>
+    <button class="btn btn-primary mt-3" onclick="window.print()">In</button>
+</div>

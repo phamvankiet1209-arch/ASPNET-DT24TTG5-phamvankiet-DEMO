@@ -1,0 +1,13 @@
+@model Payment
+@{ ViewData["Title"] = "Chuyển khoản"; }
+<div class="container py-5">
+    <div class="card-lux p-4 mx-auto" style="max-width:640px">
+        <h3>Thông tin chuyển khoản</h3>
+        <p>Ngân hàng: Vietcombank - Chi nhánh Hà Nội</p>
+        <p>STK: <strong>0123456789</strong> - CTCP StayLux</p>
+        <p>Số tiền: <strong>@CurrencyHelper.ToVnd(Model.Amount)</strong></p>
+        <p>Nội dung: <strong>@Model.Booking.BookingCode @Model.TransactionCode</strong></p>
+        <p class="text-muted">Giao dịch đang chờ nhân viên xác nhận.</p>
+        <a class="btn btn-primary" asp-action="Result" asp-route-paymentId="@Model.PaymentId" asp-route-success="true">Tôi đã chuyển khoản</a>
+    </div>
+</div>

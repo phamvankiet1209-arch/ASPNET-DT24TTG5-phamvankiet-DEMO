@@ -1,0 +1,11 @@
+@model Amenity
+@{ ViewData["Title"] = "Tiện nghi"; }
+<form method="post" class="card p-4">
+@Html.AntiForgeryToken()
+<input type="hidden" asp-for="AmenityId" />
+<div class="mb-2"><label>Tên</label><input asp-for="Name" class="form-control" /></div>
+<div class="mb-2"><label>Icon FontAwesome</label><input asp-for="Icon" class="form-control" /></div>
+<div class="mb-2"><label>Mô tả</label><input asp-for="Description" class="form-control" /></div>
+<div class="form-check"><input asp-for="Status" class="form-check-input" /><label class="form-check-label">Hiện</label></div>
+<button class="btn btn-primary mt-3">Lưu</button>
+</form>

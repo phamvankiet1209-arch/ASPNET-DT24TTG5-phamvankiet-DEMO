@@ -1,0 +1,20 @@
+@model Booking
+@{ ViewData["Title"] = "Hóa đơn"; }
+<div class="container py-4">
+    <div class="card-lux p-5">
+        <div class="d-flex justify-content-between"><h2>HÓA ĐƠN</h2><div>@Model.BookingCode<br />@DateHelper.ToVnDate(Model.CreatedAt)</div></div>
+        <hr />
+        <p>Khách hàng: @Model.GuestName</p>
+        <p>Phòng: @Model.Room.Name - @Model.Hotel.Name</p>
+        <table class="table">
+            <tr><td>Tiền phòng (@Model.NumberOfNights đêm)</td><td class="text-end">@CurrencyHelper.ToVnd(Model.Subtotal)</td></tr>
+            <tr><td>Phụ phí</td><td class="text-end">@CurrencyHelper.ToVnd(Model.ExtraFee)</td></tr>
+            <tr><td>Dịch vụ</td><td class="text-end">@CurrencyHelper.ToVnd(Model.ServiceAmount)</td></tr>
+            <tr><td>Giảm giá</td><td class="text-end">- @CurrencyHelper.ToVnd(Model.DiscountAmount)</td></tr>
+            <tr><td>Thuế</td><td class="text-end">@CurrencyHelper.ToVnd(Model.TaxAmount)</td></tr>
+            <tr class="fw-bold"><td>Tổng cộng</td><td class="text-end">@CurrencyHelper.ToVnd(Model.TotalAmount)</td></tr>
+        </table>
+        <p>Trạng thái thanh toán: @EnumDisplayHelper.PaymentStatus(Model.PaymentStatus)</p>
+        <button class="btn btn-primary" onclick="window.print()">In hóa đơn</button>
+    </div>
+</div>

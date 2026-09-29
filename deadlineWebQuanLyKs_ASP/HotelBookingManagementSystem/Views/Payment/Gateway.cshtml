@@ -1,0 +1,16 @@
+@model Payment
+@{ ViewData["Title"] = "Cổng thanh toán demo"; }
+<div class="container py-5">
+    <div class="card-lux p-5 mx-auto text-center" style="max-width:640px">
+        <h2>@EnumDisplayHelper.PaymentMethod(Model.PaymentMethod) Demo</h2>
+        <p>Mã giao dịch: <strong>@Model.TransactionCode</strong></p>
+        <h3 class="price">@CurrencyHelper.ToVnd(Model.Amount)</h3>
+        <p class="text-muted">Đây là mô phỏng cổng thanh toán. Chọn kết quả để hoàn tất demo.</p>
+        <form asp-action="Simulate" method="post" class="d-flex justify-content-center gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="paymentId" value="@Model.PaymentId" />
+            <button class="btn btn-success" name="success" value="true">Thanh toán thành công</button>
+            <button class="btn btn-outline-danger" name="success" value="false">Thanh toán thất bại</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+@model RegisterViewModel
+@{ ViewData["Title"] = "Đăng ký"; Layout = null; }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng ký - StayLux</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="auth-panel">
+    <form asp-action="Register" method="post" class="auth-card">
+        @Html.AntiForgeryToken()
+        <h2>Tạo tài khoản</h2>
+        <p class="text-muted">Gia nhập StayLux chỉ trong một phút.</p>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3"><label class="form-label">Họ tên</label><input asp-for="FullName" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">Email</label><input asp-for="Email" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">Số điện thoại</label><input asp-for="Phone" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">Mật khẩu</label><input asp-for="Password" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">Xác nhận mật khẩu</label><input asp-for="ConfirmPassword" class="form-control" /></div>
+        <button class="btn btn-primary w-100 mb-3">Đăng ký</button>
+        <a asp-action="Login">Đã có tài khoản? Đăng nhập</a>
+    </form>
+</body>
+</html>

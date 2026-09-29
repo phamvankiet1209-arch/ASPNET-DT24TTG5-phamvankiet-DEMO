@@ -1,0 +1,17 @@
+@model RoomType
+@{ ViewData["Title"] = Model.RoomTypeId==0?"Thêm loại phòng":"Sửa loại phòng"; }
+<form method="post" class="card p-4">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="RoomTypeId" />
+    <div class="row g-3">
+        <div class="col-md-6"><label>Tên</label><input asp-for="Name" class="form-control" /></div>
+        <div class="col-md-6"><label>Loại giường</label><input asp-for="BedType" class="form-control" /></div>
+        <div class="col-md-3"><label>Người lớn</label><input asp-for="MaxAdults" class="form-control" /></div>
+        <div class="col-md-3"><label>Trẻ em</label><input asp-for="MaxChildren" class="form-control" /></div>
+        <div class="col-md-3"><label>Diện tích</label><input asp-for="Area" class="form-control" /></div>
+        <div class="col-md-3"><label>Giá gốc</label><input asp-for="BasePrice" class="form-control" /></div>
+        <div class="col-12"><label>Mô tả</label><textarea asp-for="Description" class="form-control"></textarea></div>
+        <div class="form-check"><input asp-for="Status" class="form-check-input" /><label class="form-check-label">Hoạt động</label></div>
+    </div>
+    <button class="btn btn-primary mt-3">Lưu</button>
+</form>

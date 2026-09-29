@@ -1,0 +1,18 @@
+@model List<Voucher>
+@{ ViewData["Title"] = "Voucher"; }
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm voucher</a>
+<table class="table bg-white">
+<thead><tr><th>Mã</th><th>Tên</th><th>Giá trị</th><th>Hạn</th><th>Lượt</th><th></th></tr></thead>
+<tbody>
+@foreach (var v in Model) {
+<tr>
+<td>@v.Code</td><td>@v.Name</td>
+<td>@(v.DiscountType==DiscountType.Percentage ? v.DiscountValue+"%" : CurrencyHelper.ToVnd(v.DiscountValue))</td>
+<td>@DateHelper.ToVnDate(v.EndDate)</td>
+<td>@v.UsedCount/@v.Quantity</td>
+<td>
+<a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@v.VoucherId">Sửa</a>
+<form asp-action="Delete" method="post" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@v.VoucherId" /><button class="btn btn-sm btn-outline-danger">Ngừng</button></form>
+</td>
+</tr>}
+</tbody></table>

@@ -1,0 +1,33 @@
+@model List<Booking>
+@{ ViewData["Title"] = "Đặt phòng của tôi"; var tab = ViewBag.Tab as string; }
+<div class="container py-4">
+    <h2>Đặt phòng của tôi</h2>
+    <ul class="nav nav-pills my-3">
+        <li class="nav-item"><a class="nav-link @(tab=="upcoming"?"active":"")" asp-action="MyBookings" asp-route-tab="upcoming">Sắp tới</a></li>
+        <li class="nav-item"><a class="nav-link @(tab=="staying"?"active":"")" asp-action="MyBookings" asp-route-tab="staying">Đang lưu trú</a></li>
+        <li class="nav-item"><a class="nav-link @(tab=="completed"?"active":"")" asp-action="MyBookings" asp-route-tab="completed">Đã hoàn thành</a></li>
+        <li class="nav-item"><a class="nav-link @(tab=="cancelled"?"active":"")" asp-action="MyBookings" asp-route-tab="cancelled">Đã hủy</a></li>
+    </ul>
+    <div class="row g-3">
+        @foreach (var b in Model)
+        {
+            <div class="col-12">
+                <div class="card-lux p-3 d-md-flex gap-3">
+                    <img src="@b.Room.Thumbnail" style="width:180px;height:120px;object-fit:cover;border-radius:12px" alt="@b.Room.Name" />
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">@b.BookingCode</div>
+                        <h5 class="mb-1">@b.Room.Name</h5>
+                        <div class="text-muted">@b.Hotel.Name · @DateHelper.ToVnDate(b.CheckInDate) - @DateHelper.ToVnDate(b.CheckOutDate)</div>
+                        <span class="badge bg-@EnumDisplayHelper.BookingStatusClass(b.BookingStatus)">@EnumDisplayHelper.BookingStatus(b.BookingStatus)</span>
+                        <span class="badge bg-@EnumDisplayHelper.PaymentStatusClass(b.PaymentStatus)">@EnumDisplayHelper.PaymentStatus(b.PaymentStatus)</span>
+                    </div>
+                    <div class="text-md-end">
+                        <div class="price">@CurrencyHelper.ToVnd(b.TotalAmount)</div>
+                        <a class="btn btn-outline-primary btn-sm mt-2" asp-action="Details" asp-route-id="@b.BookingId">Chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (!Model.Any()) { <div class="empty-state">Chưa có đặt phòng ở mục này.</div> }
+    </div>
+</div>

@@ -1,0 +1,141 @@
+@model List<Hotel>
+@{
+    ViewData["Title"] = "Khách sạn";
+    var cities = ViewBag.Cities as List<string> ?? new List<string>();
+    var selectedCity = ViewBag.City as string;
+    var page = (int)(ViewBag.Page ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+}
+<div class="page-banner">
+    <div class="container">
+        <nav class="small mb-2" style="opacity:.85">
+            <a asp-controller="Home" asp-action="Index">Trang chủ</a> / <span>Khách sạn</span>
+        </nav>
+        <h1>Bộ sưu tập khách sạn StayLux</h1>
+        <p class="mb-0">Năm điểm đến đã chọn lọc — Hà Nội, Đà Nẵng, Đà Lạt và TP. Hồ Chí Minh. Mỗi khách sạn đều có lễ tân 24/7, Wi-Fi, và phòng được kiểm tra lịch trống theo ngày nhận/trả.</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card-lux static p-4 h-100">
+                <div class="eyebrow">Mạng lưới</div>
+                <h3 class="mb-1">@Model.Count khách sạn đang mở</h3>
+                <p class="muted mb-0">Từ boutique phố cổ đến resort sát biển Mỹ Khê — cùng một quy trình đặt phòng minh bạch.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-lux static p-4 h-100">
+                <div class="eyebrow">Giá hiển thị</div>
+                <h3 class="mb-1">Giá / đêm, thuế 8%</h3>
+                <p class="muted mb-0">Giá trên thẻ là giá hiện hành. Thuế GTGT và dịch vụ thêm được tính rõ khi bạn nhấn Đặt phòng.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-lux static p-4 h-100">
+                <div class="eyebrow">Hỗ trợ</div>
+                <h3 class="mb-1">Hotline 1900 6868</h3>
+                <p class="muted mb-0">Đổi lịch, đặt đoàn hoặc xuất hóa đơn VAT — phản hồi trong giờ hành chính, lễ tân khách sạn trực 24/7.</p>
+            </div>
+        </div>
+    </div>
+
+    <form method="get" class="card-lux static p-3 p-md-4 mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label">Tìm khách sạn</label>
+                <input class="form-control" name="q" value="@ViewBag.Q" placeholder="Tên, địa chỉ hoặc khu vực" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Thành phố</label>
+                <select class="form-select" name="city">
+                    <option value="">Tất cả thành phố</option>
+                    @foreach (var c in cities)
+                    {
+                        <option value="@c" selected="@(selectedCity == c)">@c</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3"><button class="btn btn-primary w-100 btn-rounded">Lọc kết quả</button></div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <a class="hotel-chip @(string.IsNullOrEmpty(selectedCity) ? "active" : "")" asp-action="Index">Tất cả</a>
+            @foreach (var c in cities)
+            {
+                <a class="hotel-chip @(selectedCity == c ? "active" : "")" asp-action="Index" asp-route-city="@c">@c</a>
+            }
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <div>
+            <div class="eyebrow">Danh sách</div>
+            <h2 class="mb-0">Chọn nơi lưu trú</h2>
+        </div>
+        <p class="muted mb-0">Nhấn vào thẻ để xem bản đồ, tiện ích và phòng còn bán.</p>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var h in Model)
+        {
+            var rated = h.Rooms.SelectMany(r => r.Reviews).Where(r => r.Status).ToList();
+            var avg = rated.Any() ? rated.Average(r => r.Rating) : 0;
+            var minPrice = h.Rooms.Where(r => r.Status != RoomStatus.Inactive).Select(r => r.DisplayPrice).DefaultIfEmpty(0).Min();
+            var desc = h.Description.Length > 110 ? h.Description.Substring(0, 110) + "…" : h.Description;
+            <div class="col-md-6 col-xl-4">
+                <a class="card-lux fill hotel-card d-block" asp-action="Details" asp-route-id="@h.HotelId">
+                    <div class="media">
+                        <img src="@(h.Thumbnail ?? "/images/hotels/hotel-1.jpg")" alt="@h.Name" />
+                        <span class="badge badge-accent position-absolute top-0 start-0 m-3">@h.City</span>
+                    </div>
+                    <div class="p-3 p-lg-4">
+                        <div class="stars small">@for (int i = 0; i < h.StarRating; i++) { <i class="fa-solid fa-star"></i> } <span class="text-muted">@h.StarRating sao</span></div>
+                        <h4 class="mt-2 mb-1">@h.Name</h4>
+                        <div class="text-muted mb-2"><i class="fa-solid fa-location-dot me-1"></i>@h.District, @h.City</div>
+                        <p class="muted small mb-3">@desc</p>
+                        <div class="d-flex justify-content-between align-items-end gap-2">
+                            <div class="small">@h.Rooms.Count phòng · @(avg > 0 ? avg.ToString("0.0") : "Mới")</div>
+                            <div class="text-end">
+                                <div class="small text-muted">Giá từ</div>
+                                <div class="price">@CurrencyHelper.ToVnd(minPrice)</div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+        @if (!Model.Any())
+        {
+            <div class="col-12"><div class="empty-state card-lux static">Không tìm thấy khách sạn phù hợp. Thử bỏ bộ lọc thành phố hoặc đổi từ khóa.</div></div>
+        }
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav class="mt-4 d-flex justify-content-center gap-2">
+            @for (var i = 1; i <= totalPages; i++)
+            {
+                <a class="btn @(i == page ? "btn-primary" : "btn-outline-primary") btn-sm btn-rounded" asp-action="Index" asp-route-page="@i" asp-route-city="@selectedCity" asp-route-q="@ViewBag.Q">@i</a>
+            }
+        </nav>
+    }
+
+    <div class="card-lux static p-4 p-lg-5 mt-5">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-7">
+                <div class="eyebrow">Cách đặt</div>
+                <h3>Ba bước tới kỳ nghỉ</h3>
+                <ul class="info-list">
+                    <li><i class="fa-solid fa-1"></i><span>Chọn khách sạn và hạng phòng, kiểm tra lịch trống theo ngày nhận/trả.</span></li>
+                    <li><i class="fa-solid fa-2"></i><span>Áp voucher nếu có, chọn thanh toán tại quầy hoặc cổng demo.</span></li>
+                    <li><i class="fa-solid fa-3"></i><span>Nhận mã đặt phòng qua tài khoản, check-in đúng giờ tại lễ tân.</span></li>
+                </ul>
+            </div>
+            <div class="col-lg-5">
+                <p class="muted">Cần đặt đoàn từ 10 khách, xuất hóa đơn VAT hoặc hỏi chính sách hủy? Gửi yêu cầu qua trang Liên hệ — bộ phận chăm sóc phản hồi trong giờ hành chính.</p>
+                <a class="btn btn-primary btn-rounded" asp-controller="Home" asp-action="Contact">Liên hệ StayLux</a>
+            </div>
+        </div>
+    </div>
+</div>

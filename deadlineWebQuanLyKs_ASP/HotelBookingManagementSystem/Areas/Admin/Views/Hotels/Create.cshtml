@@ -1,0 +1,24 @@
+@model HotelFormViewModel
+@{ ViewData["Title"] = Model.HotelId == 0 ? "Thêm khách sạn" : "Sửa khách sạn"; }
+<form method="post" enctype="multipart/form-data" class="card p-4">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="HotelId" />
+    <div class="row g-3">
+        <div class="col-md-6"><label>Tên</label><input asp-for="Name" class="form-control" /></div>
+        <div class="col-md-6"><label>Thành phố</label><input asp-for="City" class="form-control" /></div>
+        <div class="col-12"><label>Địa chỉ</label><input asp-for="Address" class="form-control" /></div>
+        <div class="col-md-4"><label>Quận</label><input asp-for="District" class="form-control" /></div>
+        <div class="col-md-4"><label>Điện thoại</label><input asp-for="Phone" class="form-control" /></div>
+        <div class="col-md-4"><label>Email</label><input asp-for="Email" class="form-control" /></div>
+        <div class="col-md-4"><label>Website</label><input asp-for="Website" class="form-control" /></div>
+        <div class="col-md-2"><label>Sao</label><input asp-for="StarRating" class="form-control" /></div>
+        <div class="col-md-3"><label>Check-in</label><input asp-for="CheckInTime" class="form-control" /></div>
+        <div class="col-md-3"><label>Check-out</label><input asp-for="CheckOutTime" class="form-control" /></div>
+        <div class="col-md-6"><label>Latitude</label><input asp-for="Latitude" class="form-control" /></div>
+        <div class="col-md-6"><label>Longitude</label><input asp-for="Longitude" class="form-control" /></div>
+        <div class="col-12"><label>Mô tả</label><textarea asp-for="Description" class="form-control" rows="4"></textarea></div>
+        <div class="col-md-6"><label>Ảnh</label><input asp-for="ThumbnailFile" type="file" class="form-control" /></div>
+        <div class="col-md-6 form-check mt-4"><input asp-for="Status" class="form-check-input" /><label class="form-check-label">Hoạt động</label></div>
+    </div>
+    <button class="btn btn-primary mt-3">Lưu</button>
+</form>

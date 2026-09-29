@@ -1,0 +1,11 @@
+@model List<HotelService>
+@{ ViewData["Title"] = "Dịch vụ"; }
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm</a>
+<table class="table bg-white"><thead><tr><th>Tên</th><th>Giá</th><th>Đơn vị</th><th></th></tr></thead>
+<tbody>
+@foreach (var s in Model) {
+<tr><td>@s.Name</td><td>@CurrencyHelper.ToVnd(s.Price)</td><td>@s.Unit</td><td>
+<a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@s.ServiceId">Sửa</a>
+<form asp-action="Delete" asp-route-id="@s.ServiceId" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger" data-confirm="Xóa?">Xóa</button></form>
+</td></tr>}
+</tbody></table>

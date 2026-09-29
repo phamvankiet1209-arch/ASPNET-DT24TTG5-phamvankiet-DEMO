@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] ?? "StayLux") - Đặt phòng khách sạn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-lux sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark"><i class="fa-solid fa-water"></i></span>
+                <span class="fw-bold">StayLux</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-1">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Hotel" asp-action="Index">Khách sạn</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Room" asp-action="Index">Phòng</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Room" asp-action="Promotions">Khuyến mãi</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">Giới thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Contact">Liên hệ</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        @await Component.InvokeAsync("NotificationBell")
+                        <div class="dropdown">
+                            <a class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" href="#">
+                                <img class="avatar-sm" src="~/images/users/avatar-default.jpg" alt="avatar" />
+                                <span class="d-none d-md-inline">@User.Identity.Name</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" asp-controller="Customer" asp-action="Index"><i class="fa-regular fa-user me-2"></i>Tài khoản</a></li>
+                                <li><a class="dropdown-item" asp-controller="Booking" asp-action="MyBookings">Đặt phòng của tôi</a></li>
+                                <li><a class="dropdown-item" asp-controller="Favorite" asp-action="Index">Yêu thích</a></li>
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Hồ sơ</a></li>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    <li><a class="dropdown-item" href="/Admin/Dashboard">Trang quản trị</a></li>
+                                }
+                                @if (User.IsInRole("HotelStaff"))
+                                {
+                                    <li><a class="dropdown-item" href="/Staff/Dashboard">Trang nhân viên</a></li>
+                                }
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post">
+                                        <button class="dropdown-item">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-primary btn-rounded" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                        <a class="btn btn-primary btn-rounded" asp-controller="Account" asp-action="Register">Đăng ký</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="footer-lux mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5>StayLux</h5>
+                    <p>Kỳ nghỉ bên biển, thành phố hay núi rừng — đặt phòng nhẹ nhàng, trải nghiệm sang trọng và gần gũi như làn gió biển.</p>
+                </div>
+                <div class="col-lg-2">
+                    <h5>Khám phá</h5>
+                    <div class="d-flex flex-column gap-2">
+                        <a asp-controller="Hotel" asp-action="Index">Khách sạn</a>
+                        <a asp-controller="Room" asp-action="Index">Phòng</a>
+                        <a asp-controller="Room" asp-action="Promotions">Khuyến mãi</a>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Hỗ trợ</h5>
+                    <div class="d-flex flex-column gap-2">
+                        <a asp-controller="Home" asp-action="About">Giới thiệu</a>
+                        <a asp-controller="Home" asp-action="Contact">Liên hệ</a>
+                        <a asp-controller="Home" asp-action="BookingPolicy">Chính sách đặt phòng</a>
+                        <a asp-controller="Home" asp-action="Terms">Điều khoản sử dụng</a>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Liên hệ</h5>
+                    <p>18 Trần Duy Hưng, Hà Nội<br />1900 6868<br />hello@staylux.vn</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4" />
+            <p class="mb-0 small">© 2026 StayLux Hotel Booking. Đồ án quản lý khách sạn ASP.NET Core.</p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>window.successMessage = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["Success"])); window.errorMessage = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["Error"]));</script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

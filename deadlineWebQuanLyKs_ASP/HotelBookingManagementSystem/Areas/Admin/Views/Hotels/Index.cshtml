@@ -1,0 +1,22 @@
+@model List<Hotel>
+@{ ViewData["Title"] = "Khách sạn"; }
+<div class="d-flex justify-content-between mb-3">
+    <form method="get" class="d-flex gap-2"><input class="form-control" name="q" value="@ViewBag.Q" placeholder="Tìm..." /><button class="btn btn-outline-primary">Tìm</button></form>
+    <a class="btn btn-primary" asp-action="Create">Thêm khách sạn</a>
+</div>
+<table class="table table-hover bg-white">
+    <thead><tr><th>Tên</th><th>Thành phố</th><th>Sao</th><th>Phòng</th><th>TT</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var h in Model)
+    {
+        <tr>
+            <td>@h.Name</td><td>@h.City</td><td>@h.StarRating</td><td>@h.Rooms.Count</td>
+            <td>@(h.Status?"Hiện":"Ẩn")</td>
+            <td>
+                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@h.HotelId">Sửa</a>
+                <form asp-action="Delete" asp-route-id="@h.HotelId" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger" data-confirm="Ẩn/xóa khách sạn?">Xóa</button></form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

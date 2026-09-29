@@ -1,0 +1,243 @@
+@model Room
+@{
+    ViewData["Title"] = Model.Name;
+    var similar = (List<Room>)(ViewBag.Similar ?? new List<Room>());
+    var services = (List<HotelService>)(ViewBag.Services ?? new List<HotelService>());
+    var reviews = Model.Reviews?.Where(r => r.Status).OrderByDescending(r => r.CreatedAt).ToList() ?? new List<Review>();
+    var images = Model.Images?.OrderBy(i => i.DisplayOrder).ToList() ?? new List<RoomImage>();
+    var amenities = Model.RoomAmenities?.Where(x => x.Amenity != null).Select(x => x.Amenity).ToList() ?? new List<Amenity>();
+    var mainImg = Model.Thumbnail ?? images.FirstOrDefault()?.ImageUrl ?? "/images/rooms/room-01.jpg";
+}
+<div class="page-banner">
+    <div class="container">
+        <nav class="small mb-2" style="opacity:.85">
+            <a asp-controller="Home" asp-action="Index">Trang chủ</a> /
+            <a asp-controller="Hotel" asp-action="Details" asp-route-id="@Model.HotelId">@Model.Hotel.Name</a> /
+            <span>Chi tiết phòng</span>
+        </nav>
+        <h1 class="mb-2">@Model.Name</h1>
+        <p class="mb-0"><i class="fa-solid fa-location-dot me-1"></i>@Model.Hotel.Name · @Model.Hotel.Address</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-4 detail-layout">
+        <div class="col-lg-8">
+            <img id="mainGallery" class="gallery-main mb-3" src="@mainImg" alt="@Model.Name" />
+            @if (images.Any())
+            {
+                <div class="room-thumbs mb-4">
+                    @{ var first = true; }
+                    @foreach (var img in images)
+                    {
+                        <img src="@img.ImageUrl" class="gallery-thumb @(first ? "active" : "")" alt="Ảnh phòng @Model.RoomNumber" />
+                        first = false;
+                    }
+                </div>
+            }
+
+            <div class="card-lux static p-4 p-lg-5 mb-4">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                    <div>
+                        <div class="eyebrow mb-1">@Model.RoomType.Name · Tầng @Model.Floor · Số @Model.RoomNumber</div>
+                        <h2 class="mb-2">@Model.Name</h2>
+                        <div class="stars">
+                            <i class="fa-solid fa-star"></i>
+                            @(Model.AverageRating > 0 ? Model.AverageRating.ToString("0.0") : "Mới")
+                            <span class="text-muted"> · @Model.ReviewCount đánh giá từ khách đã lưu trú</span>
+                        </div>
+                    </div>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <button class="btn btn-outline-danger rounded-circle js-fav" type="button" data-id="@Model.RoomId" title="Yêu thích"><i class="fa-regular fa-heart"></i></button>
+                    }
+                </div>
+                <p class="mt-3 mb-4">@Model.Description Không gian được thiết kế để nghỉ ngơi thật sự: ánh sáng tự nhiên, giường êm và các tiện nghi cần thiết cho cả chuyến đi công tác lẫn kỳ nghỉ cuối tuần.</p>
+
+                <div class="spec-grid mb-4">
+                    <div class="spec-item"><small>Diện tích</small><strong>@Model.Area m²</strong></div>
+                    <div class="spec-item"><small>Người lớn</small><strong>@Model.AdultCapacity khách</strong></div>
+                    <div class="spec-item"><small>Trẻ em</small><strong>@Model.ChildCapacity bé</strong></div>
+                    <div class="spec-item"><small>Giường</small><strong>@Model.BedType · @Model.NumberOfBeds</strong></div>
+                    <div class="spec-item"><small>Tầm nhìn</small><strong>@(Model.ViewType ?? "Thành phố")</strong></div>
+                    <div class="spec-item"><small>Nhận phòng</small><strong>@Model.Hotel.CheckInTime</strong></div>
+                    <div class="spec-item"><small>Trả phòng</small><strong>@Model.Hotel.CheckOutTime</strong></div>
+                    <div class="spec-item"><small>Hút thuốc</small><strong>@(Model.SmokingAllowed ? "Cho phép" : "Không hút thuốc")</strong></div>
+                </div>
+
+                <h4 class="mb-3">Tiện nghi trong phòng</h4>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    @if (Model.HasWifi) { <span class="amenity-chip"><i class="fa-solid fa-wifi me-1"></i>Wi-Fi</span> }
+                    @if (Model.HasAirConditioner) { <span class="amenity-chip"><i class="fa-solid fa-snowflake me-1"></i>Điều hòa</span> }
+                    @if (Model.BreakfastIncluded) { <span class="amenity-chip"><i class="fa-solid fa-mug-saucer me-1"></i>Gồm bữa sáng</span> }
+                    @if (Model.HasBalcony) { <span class="amenity-chip"><i class="fa-solid fa-door-open me-1"></i>Ban công</span> }
+                    @if (Model.HasBathtub) { <span class="amenity-chip"><i class="fa-solid fa-bath me-1"></i>Bồn tắm</span> }
+                    @if (Model.HasNiceView) { <span class="amenity-chip"><i class="fa-solid fa-mountain-sun me-1"></i>View đẹp</span> }
+                    @foreach (var a in amenities)
+                    {
+                        <span class="amenity-chip"><i class="fa-solid @(a.Icon ?? "fa-check") me-1"></i>@a.Name</span>
+                    }
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <h5>Chính sách hủy</h5>
+                        <p class="muted mb-0">@(Model.CancellationPolicy ?? "Hủy miễn phí trước 24 giờ so với ngày nhận phòng. Sau thời điểm này có thể tính phí đêm đầu.")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Phụ thu</h5>
+                        <p class="muted mb-0">Giường phụ / phí phát sinh: <strong>@CurrencyHelper.ToVnd(Model.ExtraFee)</strong> mỗi đêm. Thuế GTGT 8% được tính khi đặt.</p>
+                    </div>
+                </div>
+
+                <h5>Nội dung phòng gồm</h5>
+                <ul class="info-list">
+                    <li><i class="fa-solid fa-bed"></i><span>Giường @Model.BedType (@Model.NumberOfBeds), ga gối được thay mỗi lần nhận phòng</span></li>
+                    <li><i class="fa-solid fa-shower"></i><span>Phòng tắm riêng @(Model.HasBathtub ? "có bồn tắm" : "vòi sen"), đồ dùng cá nhân cơ bản</span></li>
+                    <li><i class="fa-solid fa-tv"></i><span>Smart TV, bàn làm việc, tủ lạnh mini và ấm đun</span></li>
+                    <li><i class="fa-solid fa-shield-heart"></i><span>Dọn phòng hàng ngày theo yêu cầu, két an toàn tại lễ tân</span></li>
+                </ul>
+            </div>
+
+            <div class="card-lux static p-4 p-lg-5 mb-4">
+                <h4 class="mb-3">Về @Model.Hotel.Name</h4>
+                <p>@Model.Hotel.Description</p>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="spec-item"><small>Địa chỉ</small><strong>@Model.Hotel.Address</strong></div></div>
+                    <div class="col-md-6"><div class="spec-item"><small>Khu vực</small><strong>@Model.Hotel.District, @Model.Hotel.City</strong></div></div>
+                    <div class="col-md-6"><div class="spec-item"><small>Liên hệ khách sạn</small><strong>@Model.Hotel.Phone</strong></div></div>
+                    <div class="col-md-6"><div class="spec-item"><small>Email</small><strong>@Model.Hotel.Email</strong></div></div>
+                </div>
+                <a class="btn btn-outline-primary btn-rounded mt-3" asp-controller="Hotel" asp-action="Details" asp-route-id="@Model.HotelId">Xem toàn bộ khách sạn</a>
+            </div>
+
+            @if (services.Any())
+            {
+                <div class="card-lux static p-4 p-lg-5 mb-4">
+                    <h4 class="mb-3">Dịch vụ có thể thêm khi đặt</h4>
+                    <div class="row g-3">
+                        @foreach (var s in services.Take(8))
+                        {
+                            <div class="col-md-6">
+                                <div class="spec-item h-100">
+                                    <strong>@s.Name</strong>
+                                    <small>@s.Description</small>
+                                    <div class="price mt-2">@CurrencyHelper.ToVnd(s.Price) / @s.Unit</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="card-lux static p-4 p-lg-5 mb-4">
+                <h4 class="mb-3">Đánh giá khách hàng</h4>
+                @if (reviews.Any())
+                {
+                    var avgClean = reviews.Average(r => r.CleanlinessRating);
+                    var avgLoc = reviews.Average(r => r.LocationRating);
+                    var avgSvc = reviews.Average(r => r.ServiceRating);
+                    var avgStaff = reviews.Average(r => r.StaffRating);
+                    var avgVal = reviews.Average(r => r.ValueRating);
+                    <div class="spec-grid mb-4">
+                        <div class="spec-item"><small>Sạch sẽ</small><strong>@avgClean.ToString("0.0")</strong></div>
+                        <div class="spec-item"><small>Vị trí</small><strong>@avgLoc.ToString("0.0")</strong></div>
+                        <div class="spec-item"><small>Dịch vụ</small><strong>@avgSvc.ToString("0.0")</strong></div>
+                        <div class="spec-item"><small>Nhân viên</small><strong>@avgStaff.ToString("0.0")</strong></div>
+                        <div class="spec-item"><small>Đáng tiền</small><strong>@avgVal.ToString("0.0")</strong></div>
+                    </div>
+                    @foreach (var rv in reviews)
+                    {
+                        <div class="border-bottom py-3">
+                            <div class="d-flex justify-content-between gap-2">
+                                <div class="fw-semibold">@rv.Title</div>
+                                <div class="stars small"><i class="fa-solid fa-star"></i> @rv.Rating</div>
+                            </div>
+                            <p class="mb-1">@rv.Comment</p>
+                            <div class="small text-muted">@DateHelper.ToVnDate(rv.CreatedAt) · @(rv.User?.FullName ?? "Khách StayLux")</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="muted mb-0">Phòng chưa có đánh giá hiển thị. Hãy là khách đầu tiên chia sẻ trải nghiệm sau khi trả phòng.</p>
+                }
+            </div>
+
+            <div class="card-lux static p-4 p-lg-5 mb-4">
+                <h4 class="mb-3">Nội quy phòng</h4>
+                <ul class="info-list">
+                    <li><i class="fa-solid fa-volume-low"></i><span>Giữ yên tĩnh sau 22:00, phù hợp khách công tác và gia đình</span></li>
+                    <li><i class="fa-solid fa-ban"></i><span>Không tổ chức tiệc trong phòng; thú cưng vui lòng báo trước</span></li>
+                    <li><i class="fa-solid fa-id-card"></i><span>Mang CCCD/hộ chiếu khi nhận phòng, đúng số khách đã khai</span></li>
+                    <li><i class="fa-solid fa-fire-extinguisher"></i><span>Không dùng bếp nấu trong phòng; hút thuốc chỉ ở khu cho phép</span></li>
+                </ul>
+            </div>
+
+            @if (similar.Any())
+            {
+                <h4 class="mb-3">Phòng tương tự tại @Model.Hotel.Name</h4>
+                <p class="muted mb-3">Cùng khách sạn, hạng khác — tiện so sánh sức chứa và giá.</p>
+                <div class="row g-3">
+                    @foreach (var r in similar)
+                    {
+                        <div class="col-md-6">@await Html.PartialAsync("_RoomCard", r)</div>
+                    }
+                </div>
+            }
+
+            <div class="card-lux static p-4 p-lg-5 mt-4">
+                <h4 class="mb-3">Câu hỏi trước khi đặt</h4>
+                <div class="faq-item">
+                    <h6>Phòng còn trống đúng ngày tôi chọn?</h6>
+                    <p class="muted mb-0">Dùng nút Kiểm tra phòng trống ở cột bên. Hệ thống đối chiếu các booking chưa hủy; trả phòng và nhận phòng cùng ngày vẫn được phép.</p>
+                </div>
+                <div class="faq-item">
+                    <h6>Giá trên thẻ đã gồm thuế?</h6>
+                    <p class="muted mb-0">Giá / đêm chưa gồm VAT 8%. Tổng thanh toán hiện rõ ở bước Đặt phòng, kèm voucher nếu bạn nhập mã.</p>
+                </div>
+                <div class="faq-item">
+                    <h6>Có thể đổi phòng sau khi đặt?</h6>
+                    <p class="muted mb-0">Liên hệ lễ tân hoặc gửi form Liên hệ với mã booking. Đổi phòng phụ thuộc tình trạng trống cùng ngày.</p>
+                </div>
+            </div>
+        </div>
+
+        <aside class="col-lg-4">
+            <div class="card-lux static booking-box p-4 mb-3">
+                @if (Model.HasDiscount)
+                {
+                    <span class="badge badge-accent mb-2">Đang giảm giá</span>
+                    <div class="price-old">@CurrencyHelper.ToVnd(Model.PricePerNight)</div>
+                }
+                <div class="display-6 price">@CurrencyHelper.ToVnd(Model.DisplayPrice)</div>
+                <div class="text-muted mb-3">Giá mỗi đêm, chưa gồm thuế 8%</div>
+                <div class="mb-2"><label class="form-label">Nhận phòng</label><input id="ci" type="date" class="form-control" value="@ViewBag.CheckIn" /></div>
+                <div class="mb-2"><label class="form-label">Trả phòng</label><input id="co" type="date" class="form-control" value="@ViewBag.CheckOut" /></div>
+                <button id="checkAvailBtn" data-id="@Model.RoomId" type="button" class="btn btn-outline-primary w-100 mb-2">Kiểm tra phòng trống</button>
+                <div id="availResult" class="alert d-none"></div>
+                <a class="btn btn-primary w-100 btn-lg btn-rounded" asp-controller="Booking" asp-action="Create" asp-route-roomId="@Model.RoomId">Đặt phòng ngay</a>
+                <ul class="info-list mt-3 small">
+                    <li><i class="fa-solid fa-check"></i><span>Xác nhận nhanh, thanh toán linh hoạt</span></li>
+                    <li><i class="fa-solid fa-user-lock"></i><span>Cần đăng nhập để hoàn tất đặt phòng</span></li>
+                    <li><i class="fa-solid fa-clock"></i><span>Nhận @Model.Hotel.CheckInTime · Trả @Model.Hotel.CheckOutTime</span></li>
+                    <li><i class="fa-solid fa-users"></i><span>Tối đa @Model.AdultCapacity người lớn, @Model.ChildCapacity trẻ em</span></li>
+                </ul>
+            </div>
+            <div class="card-lux static p-4 mb-3">
+                <h5>Khách sạn</h5>
+                <p class="mb-1 fw-semibold">@Model.Hotel.Name</p>
+                <p class="muted small mb-3">@Model.Hotel.Address</p>
+                <ul class="info-list small">
+                    <li><i class="fa-solid fa-star"></i><span>@Model.Hotel.StarRating sao</span></li>
+                    <li><i class="fa-solid fa-phone"></i><span>@Model.Hotel.Phone</span></li>
+                </ul>
+            </div>
+            <div class="card-lux static p-4">
+                <h5>Cần hỗ trợ?</h5>
+                <p class="muted mb-3">Đặt đoàn, giường phụ hoặc hóa đơn VAT — gửi yêu cầu, StayLux phản hồi trong giờ hành chính.</p>
+                <a class="btn btn-outline-primary btn-rounded w-100" asp-controller="Home" asp-action="Contact">Liên hệ</a>
+            </div>
+        </aside>
+    </div>
+</div>

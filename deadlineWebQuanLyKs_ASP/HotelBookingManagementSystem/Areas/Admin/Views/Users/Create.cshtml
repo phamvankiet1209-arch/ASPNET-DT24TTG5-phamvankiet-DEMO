@@ -1,0 +1,22 @@
+@model UserAdminViewModel
+@{ ViewData["Title"] = string.IsNullOrEmpty(Model.Id) ? "Thêm user" : "Sửa user"; var hotels = ViewBag.Hotels as List<Hotel>; }
+<form method="post" class="card p-4">
+@Html.AntiForgeryToken()
+<input type="hidden" asp-for="Id" />
+<div class="row g-3">
+<div class="col-md-6"><label>Họ tên</label><input asp-for="FullName" class="form-control" /></div>
+<div class="col-md-6"><label>Email</label><input asp-for="Email" class="form-control" /></div>
+<div class="col-md-6"><label>Điện thoại</label><input asp-for="Phone" class="form-control" /></div>
+<div class="col-md-6"><label>Mật khẩu</label><input asp-for="Password" class="form-control" /></div>
+<div class="col-md-6"><label>Role</label>
+<select asp-for="Role" class="form-select">
+<option>Customer</option><option>HotelStaff</option><option>Manager</option><option>Admin</option>
+</select></div>
+<div class="col-md-6"><label>Khách sạn (staff)</label>
+<select asp-for="HotelId" class="form-select"><option value="">--</option>
+@foreach (var h in hotels ?? new()) { <option value="@h.HotelId">@h.Name</option> }
+</select></div>
+<div class="form-check"><input asp-for="IsActive" class="form-check-input" /><label class="form-check-label">Hoạt động</label></div>
+</div>
+<button class="btn btn-primary mt-3">Lưu</button>
+</form>

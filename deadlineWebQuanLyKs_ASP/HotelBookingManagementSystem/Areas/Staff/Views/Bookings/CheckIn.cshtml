@@ -1,0 +1,20 @@
+@{ ViewData["Title"] = "Check-in"; }
+<div class="card p-4">
+    <h4>Tìm booking để check-in</h4>
+    <input id="q" class="form-control mb-3" placeholder="Mã booking, email, SĐT hoặc CCCD" />
+    <div id="result"></div>
+</div>
+@section Scripts {
+<script>
+$("#q").on("keyup", function(){
+  const q=$(this).val();
+  if(q.length<3) return;
+  $.get("/Staff/Bookings/SearchGuest", {q}, function(items){
+    let html='<table class="table"><thead><tr><th>Mã</th><th>Khách</th><th>Phòng</th><th>TT</th><th></th></tr></thead><tbody>';
+    items.forEach(i=>{ html += `<tr><td>${i.bookingCode}</td><td>${i.guestName}<br>${i.guestEmail}</td><td>${i.room}</td><td>${i.status}</td><td><a class="btn btn-sm btn-primary" href="/Staff/Bookings/Details/${i.bookingId}">Mở</a></td></tr>`; });
+    html+='</tbody></table>';
+    $("#result").html(html);
+  });
+});
+</script>
+}

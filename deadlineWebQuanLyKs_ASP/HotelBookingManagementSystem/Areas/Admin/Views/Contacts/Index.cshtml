@@ -1,0 +1,13 @@
+@model List<Contact>
+@{ ViewData["Title"] = "Liên hệ"; }
+<table class="table bg-white">
+<thead><tr><th>Họ tên</th><th>Email</th><th>Chủ đề</th><th>TT</th><th>Ngày</th><th></th></tr></thead>
+<tbody>
+@foreach (var c in Model) {
+<tr>
+<td>@c.FullName</td><td>@c.Email</td><td>@c.Subject</td>
+<td>@EnumDisplayHelper.ContactStatus(c.Status)</td>
+<td>@DateHelper.ToVnDate(c.CreatedAt)</td>
+<td><a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@c.ContactId">Xem</a></td>
+</tr>}
+</tbody></table>

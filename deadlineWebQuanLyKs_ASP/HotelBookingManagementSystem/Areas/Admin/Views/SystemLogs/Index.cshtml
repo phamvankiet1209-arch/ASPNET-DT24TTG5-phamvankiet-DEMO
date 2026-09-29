@@ -1,0 +1,10 @@
+@model List<SystemLog>
+@{ ViewData["Title"] = "Nhật ký hệ thống"; }
+<form method="get" class="mb-3"><input class="form-control" name="q" placeholder="Tìm action" /></form>
+<table class="table bg-white">
+<thead><tr><th>Thời gian</th><th>User</th><th>Action</th><th>Entity</th><th>Mô tả</th><th>IP</th></tr></thead>
+<tbody>
+@foreach (var l in Model) {
+<tr><td>@DateHelper.ToVnDateTime(l.CreatedAt)</td><td>@(l.User?.Email)</td><td>@l.Action</td><td>@l.Entity #@l.EntityId</td><td>@l.Description</td><td>@l.IpAddress</td></tr>
+}
+</tbody></table>

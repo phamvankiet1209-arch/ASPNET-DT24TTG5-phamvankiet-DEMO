@@ -1,0 +1,25 @@
+@model ReportResult
+@{ ViewData["Title"] = "Báo cáo"; }
+<form method="get" class="d-flex gap-2 mb-3">
+<input type="date" name="from" value="@ViewBag.From" class="form-control" />
+<input type="date" name="to" value="@ViewBag.To" class="form-control" />
+<button class="btn btn-primary">Lọc</button>
+</form>
+<div class="row g-3 mb-4">
+<div class="col-md-3"><div class="card p-3">Doanh thu<br /><strong>@CurrencyHelper.ToVnd(Model.Revenue)</strong></div></div>
+<div class="col-md-3"><div class="card p-3">Tổng booking<br /><strong>@Model.TotalBookings</strong></div></div>
+<div class="col-md-3"><div class="card p-3">Thành công<br /><strong>@Model.SuccessBookings</strong></div></div>
+<div class="col-md-3"><div class="card p-3">Hủy<br /><strong>@Model.CancelledBookings</strong></div></div>
+</div>
+<div class="card p-3 mb-3"><canvas id="repChart"></canvas></div>
+<div class="row">
+<div class="col-md-6"><h5>Phòng đặt nhiều</h5><ul>@foreach (var x in Model.TopRooms){<li>@x.Name - @x.Count - @CurrencyHelper.ToVnd(x.Revenue)</li>}</ul></div>
+<div class="col-md-6"><h5>Phòng ít đặt</h5><ul>@foreach (var x in Model.LowRooms){<li>@x.Name - @x.Count</li>}</ul></div>
+<div class="col-md-6"><h5>Khách chi tiêu nhiều</h5><ul>@foreach (var x in Model.TopCustomers){<li>@x.Name - @x.Count - @CurrencyHelper.ToVnd(x.Spent)</li>}</ul></div>
+<div class="col-md-6"><h5>Khách mới</h5><p>@Model.NewCustomers</p></div>
+</div>
+@section Scripts {
+<script>
+new Chart(document.getElementById('repChart'), {type:'bar', data:{labels:@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Labels)), datasets:[{label:'Doanh thu', data:@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RevenueSeries)), backgroundColor:'#2563EB'}]}});
+</script>
+}

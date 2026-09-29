@@ -1,0 +1,131 @@
+@model ContactViewModel
+@{ ViewData["Title"] = "Liên hệ"; }
+<div class="page-banner">
+    <div class="container">
+        <nav class="small mb-2" style="opacity:.85">
+            <a asp-controller="Home" asp-action="Index">Trang chủ</a> / <span>Liên hệ</span>
+        </nav>
+        <h1>Liên hệ StayLux</h1>
+        <p class="mb-0">Đặt phòng đoàn, xuất hóa đơn VAT, đổi lịch hoặc góp ý dịch vụ — bộ phận chăm sóc phản hồi trong giờ hành chính, lễ tân khách sạn trực 24/7.</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card-lux static p-4 h-100">
+                <div class="why-icon mb-3"><i class="fa-solid fa-location-dot"></i></div>
+                <h5>Văn phòng</h5>
+                <p class="muted mb-0">18 Trần Duy Hưng, Cầu Giấy, Hà Nội<br />Lầu 3, tòa nhà StayLux<br />Gần Trung tâm Hội nghị Quốc gia</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-lux static p-4 h-100">
+                <div class="why-icon mb-3"><i class="fa-solid fa-phone"></i></div>
+                <h5>Hotline 24/7</h5>
+                <p class="muted mb-0">1900 6868 · nhánh 1 đặt phòng<br />Nhánh 2: đoàn &amp; VAT<br />Nhánh 3: hỗ trợ đang lưu trú</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-lux static p-4 h-100">
+                <div class="why-icon mb-3"><i class="fa-solid fa-envelope"></i></div>
+                <h5>Email</h5>
+                <p class="muted mb-0">hello@staylux.vn — đặt lẻ / voucher<br />groups@staylux.vn — đoàn 10+ khách<br />invoice@staylux.vn — hóa đơn</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 detail-layout">
+        <div class="col-lg-5">
+            <div class="card-lux static p-3 mb-3">
+                <iframe class="map-frame" src="https://maps.google.com/maps?q=18%20Tran%20Duy%20Hung%20Cau%20Giay%20Hanoi&z=15&output=embed" loading="lazy" title="Bản đồ StayLux"></iframe>
+            </div>
+            <div class="card-lux static p-4 mb-3">
+                <h5>Giờ làm việc</h5>
+                <ul class="info-list">
+                    <li><i class="fa-solid fa-sun"></i><span>Thứ 2 – Thứ 6: 08:00 – 18:00</span></li>
+                    <li><i class="fa-solid fa-cloud-sun"></i><span>Thứ 7: 08:00 – 12:00</span></li>
+                    <li><i class="fa-solid fa-moon"></i><span>Chủ nhật: trực hotline, không nhận đoàn mới</span></li>
+                    <li><i class="fa-solid fa-bell-concierge"></i><span>Lễ tân khách sạn: 24/7</span></li>
+                </ul>
+            </div>
+            <div class="card-lux static p-4 mb-3">
+                <h5>Bạn cần gì?</h5>
+                <p class="muted mb-2">Chọn đúng bộ phận để được xử lý nhanh hơn:</p>
+                <ul class="info-list">
+                    <li><i class="fa-solid fa-bed"></i><span>Đặt phòng lẻ / voucher: hello@staylux.vn</span></li>
+                    <li><i class="fa-solid fa-people-group"></i><span>Đoàn 10+ khách: groups@staylux.vn</span></li>
+                    <li><i class="fa-solid fa-file-invoice"></i><span>Hóa đơn VAT: invoice@staylux.vn</span></li>
+                    <li><i class="fa-solid fa-handshake"></i><span>Hợp tác / affiliate: partner@staylux.vn</span></li>
+                </ul>
+            </div>
+            <div class="card-lux static p-4">
+                <h5>Đến văn phòng</h5>
+                <ul class="info-list">
+                    <li><i class="fa-solid fa-bus"></i><span>Bus 16, 25, 32 — dừng Trần Duy Hưng</span></li>
+                    <li><i class="fa-solid fa-car"></i><span>Gửi xe tầng hầm tòa nhà, 2 giờ đầu miễn phí khi làm việc với StayLux</span></li>
+                    <li><i class="fa-solid fa-wheelchair"></i><span>Thang máy và lối đi cho khách xe lăn</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <form asp-action="Contact" method="post" class="card-lux static p-4 p-lg-5">
+                @Html.AntiForgeryToken()
+                <h3 class="mb-1">Gửi yêu cầu</h3>
+                <p class="muted">Điền form, bộ phận chăm sóc khách sẽ liên hệ lại qua email hoặc điện thoại trong 1 ngày làm việc.</p>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="mb-3">
+                    <label class="form-label">Họ tên</label>
+                    <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="ban@email.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Điện thoại</label>
+                        <input asp-for="Phone" class="form-control" placeholder="09xx xxx xxx" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Chủ đề</label>
+                    <input asp-for="Subject" class="form-control" placeholder="Hỏi chính sách hủy / đặt đoàn / hóa đơn" />
+                    <span asp-validation-for="Subject" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nội dung</label>
+                    <textarea asp-for="Message" class="form-control" rows="6" placeholder="Mô tả ngày nhận phòng, số khách, mã booking hoặc vấn đề bạn cần hỗ trợ."></textarea>
+                    <span asp-validation-for="Message" class="text-danger small"></span>
+                </div>
+                <button class="btn btn-primary btn-rounded px-4" type="submit">Gửi liên hệ</button>
+            </form>
+
+            <div class="card-lux static p-4 p-lg-5 mt-4">
+                <h4 class="mb-3">Câu hỏi thường gặp</h4>
+                <div class="faq-item">
+                    <h6>Tôi có cần thanh toán ngay khi đặt?</h6>
+                    <p class="muted mb-0">Có thể chọn thanh toán tại khách sạn, chuyển khoản hoặc cổng demo VNPay / MoMo / PayOS. Đặt phòng vẫn được ghi nhận khi chọn trả tại quầy.</p>
+                </div>
+                <div class="faq-item">
+                    <h6>Hủy phòng như thế nào?</h6>
+                    <p class="muted mb-0">Khách có thể hủy trước ngày nhận phòng trong mục Đặt phòng của tôi, nếu còn đủ điều kiện. Nhân viên lễ tân hỗ trợ các trường hợp đang lưu trú.</p>
+                </div>
+                <div class="faq-item">
+                    <h6>Khi nào được viết đánh giá?</h6>
+                    <p class="muted mb-0">Sau khi booking chuyển sang trạng thái Đã trả phòng. Mỗi đặt phòng chỉ đánh giá một lần.</p>
+                </div>
+                <div class="faq-item">
+                    <h6>Xuất hóa đơn VAT mất bao lâu?</h6>
+                    <p class="muted mb-0">Gửi MST, tên công ty và mã booking tới invoice@staylux.vn. Hóa đơn điện tử thường có trong 2–3 ngày làm việc sau khi thanh toán.</p>
+                </div>
+                <div class="faq-item">
+                    <h6>Đặt đoàn cần thông tin gì?</h6>
+                    <p class="muted mb-0">Ngày nhận/trả, số phòng, hạng phòng mong muốn, có cần buffet/đưa đón hay không. Báo giá trong 24 giờ làm việc.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

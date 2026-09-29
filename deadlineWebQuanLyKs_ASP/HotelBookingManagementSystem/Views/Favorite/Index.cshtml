@@ -1,0 +1,12 @@
+@model List<Favorite>
+@{ ViewData["Title"] = "Yêu thích"; }
+<div class="container py-4">
+    <h2>Phòng yêu thích</h2>
+    <div class="row g-4 mt-1">
+        @foreach (var f in Model)
+        {
+            <div class="col-md-4">@await Html.PartialAsync("_RoomCard", f.Room)</div>
+        }
+        @if (!Model.Any()) { <div class="empty-state">Chưa có phòng yêu thích.</div> }
+    </div>
+</div>

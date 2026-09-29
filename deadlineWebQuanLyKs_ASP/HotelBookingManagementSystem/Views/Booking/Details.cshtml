@@ -1,0 +1,53 @@
+@model Booking
+@{ ViewData["Title"] = "Chi tiết đặt phòng"; }
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>@Model.BookingCode</h2>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" asp-action="Print" asp-route-id="@Model.BookingId">In</a>
+            <a class="btn btn-outline-secondary" asp-action="Invoice" asp-route-id="@Model.BookingId">Hóa đơn</a>
+            @if (Model.PaymentStatus != PaymentStatus.Paid && Model.BookingStatus != BookingStatus.Cancelled)
+            {
+                <a class="btn btn-primary" asp-controller="Payment" asp-action="Checkout" asp-route-bookingId="@Model.BookingId">Thanh toán</a>
+            }
+            <a class="btn btn-outline-primary" asp-action="Rebook" asp-route-id="@Model.BookingId">Đặt lại</a>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-lux p-4 mb-3">
+                <h4>@Model.Room.Name</h4>
+                <p>@Model.Hotel.Name · @Model.Hotel.Address</p>
+                <p>Nhận: @DateHelper.ToVnDate(Model.CheckInDate) · Trả: @DateHelper.ToVnDate(Model.CheckOutDate) · @Model.NumberOfNights đêm</p>
+                <p>Khách: @Model.GuestName · @Model.GuestPhone · CCCD: @Model.GuestIdentityNumber</p>
+                <p>@Model.Adults người lớn, @Model.Children trẻ em</p>
+                <span class="badge bg-@EnumDisplayHelper.BookingStatusClass(Model.BookingStatus)">@EnumDisplayHelper.BookingStatus(Model.BookingStatus)</span>
+                <span class="badge bg-@EnumDisplayHelper.PaymentStatusClass(Model.PaymentStatus)">@EnumDisplayHelper.PaymentStatus(Model.PaymentStatus)</span>
+            </div>
+            @if (Model.BookingStatus is BookingStatus.Pending or BookingStatus.Confirmed)
+            {
+                <form asp-action="Cancel" method="post" class="card-lux p-4">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.BookingId" />
+                    <label class="form-label">Lý do hủy</label>
+                    <textarea name="reason" class="form-control mb-2" required></textarea>
+                    <button class="btn btn-outline-danger" data-confirm="Bạn muốn hủy đặt phòng này?">Hủy đặt phòng</button>
+                </form>
+            }
+            @if (Model.BookingStatus == BookingStatus.CheckedOut && !Model.Reviews.Any())
+            {
+                <a class="btn btn-accent mt-3" asp-controller="Review" asp-action="Create" asp-route-bookingId="@Model.BookingId">Viết đánh giá</a>
+            }
+        </div>
+        <div class="col-lg-4">
+            <div class="card-lux p-4">
+                <div>Tiền phòng: @CurrencyHelper.ToVnd(Model.Subtotal)</div>
+                <div>Phụ phí: @CurrencyHelper.ToVnd(Model.ExtraFee)</div>
+                <div>Dịch vụ: @CurrencyHelper.ToVnd(Model.ServiceAmount)</div>
+                <div>Giảm giá: @CurrencyHelper.ToVnd(Model.DiscountAmount)</div>
+                <div>Thuế: @CurrencyHelper.ToVnd(Model.TaxAmount)</div>
+                <h4 class="mt-2">Tổng @CurrencyHelper.ToVnd(Model.TotalAmount)</h4>
+            </div>
+        </div>
+    </div>
+</div>

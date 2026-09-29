@@ -1,0 +1,11 @@
+@model List<Room>
+@{ ViewData["Title"] = "Khuyến mãi"; }
+<div class="page-banner"><div class="container"><h1>Ưu đãi hôm nay</h1></div></div>
+<div class="container pb-5">
+    <div class="row g-4">
+        @foreach (var r in Model)
+        {
+            <div class="col-md-6 col-xl-4">@await Html.PartialAsync("_RoomCard", r)</div>
+        }
+    </div>
+</div>
