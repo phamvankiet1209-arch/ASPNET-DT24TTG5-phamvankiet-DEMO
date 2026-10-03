@@ -14,7 +14,7 @@ Website đặt phòng khách sạn hoàn chỉnh viết bằng **ASP.NET Core 8 
 - .NET 8 SDK (hoặc .NET 8+ SDK có targeting pack net8.0)
 - SQL Server, SQL Server Express hoặc LocalDB
 - Visual Studio 2022 hoặc Visual Studio Code + C# extension
-
+- Tải file về và chạy trên ứng dụng Visual Studio Code
 ## Cấu hình Connection String
 
 Mở `appsettings.json`:
